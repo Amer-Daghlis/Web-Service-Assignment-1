@@ -44,8 +44,9 @@ function ResultPage() {
 
     return {
       question: q.question,
-      userAnswer: userKey ? q.answers[userKey] : null,
-      correctAnswers: correctKeys.map((key) => q.answers[key]),
+      answers: q.answers,
+      correctKeys,
+      userKey,
       isCorrect
     };
   });
@@ -66,6 +67,59 @@ function ResultPage() {
             Quiz Results
           </Typography>
 
+          {/* 🎯 Final Score Circle + Message */}
+          <Box textAlign="center" mt={2} mb={4}>
+            {score >= 6 ? (
+              <>
+                <Box
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    backgroundColor: '#4caf50',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mx: 'auto',
+                    mb: 2,
+                    animation: 'pop 0.6s ease',
+                  }}
+                >
+                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
+                    {score}/{questions.length}
+                  </Typography>
+                </Box>
+                <Typography variant="h5" color="success.main" sx={{ fontWeight: 'bold' }}>
+                  🎉🎊 Great job, Brainiac! 🎊🎉
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Box
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    backgroundColor: '#f44336',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mx: 'auto',
+                    mb: 2,
+                    animation: 'shake 0.4s ease-in-out',
+                  }}
+                >
+                  <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
+                    {score}/{questions.length}
+                  </Typography>
+                </Box>
+                <Typography variant="h5" color="error.main" sx={{ fontWeight: 'bold' }}>
+                  😡 Oops... Better luck next time!
+                </Typography>
+              </>
+            )}
+          </Box>
+
           <Typography variant="h6" align="center" gutterBottom>
             You got <strong>{score}</strong> out of <strong>{questions.length}</strong> correct (
             <strong>{percentage}%</strong>)
@@ -73,50 +127,73 @@ function ResultPage() {
 
           <Divider sx={{ my: 3 }} />
 
-          {/* 🎯 Breakdown */}
+          {/* 🧠 Question Breakdown */}
           {results.map((r, idx) => (
             <Paper
               key={idx}
               sx={{
-                mb: 2,
+                mb: 3,
                 p: 3,
                 backgroundColor: r.isCorrect ? '#e8f5e9' : '#ffebee',
                 borderLeft: `6px solid ${r.isCorrect ? '#4caf50' : '#f44336'}`,
               }}
             >
-              <Typography variant="subtitle1" fontWeight="bold">
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
                 Q{idx + 1}: {r.question}
               </Typography>
-              <Typography sx={{ mt: 1 }}>
-                <strong>Your Answer:</strong>{' '}
-                {r.userAnswer || (
-                  <span style={{ fontStyle: 'italic', color: '#888' }}>No Answer</span>
-                )}
+
+              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                Select one:
               </Typography>
-              {!r.isCorrect && (
-                <Typography sx={{ mt: 1 }} color="primary">
-                  <strong>Correct Answer{r.correctAnswers.length > 1 ? 's' : ''}:</strong>{' '}
-                  {r.correctAnswers.join(', ')}
-                </Typography>
-              )}
+
+              {Object.entries(r.answers).map(([key, value]) => {
+                if (!value) return null;
+
+                const isCorrect = r.correctKeys.includes(key);
+                const isUserAnswer = r.userKey === key;
+
+                return (
+                  <Box key={key} display="flex" alignItems="center" mb={0.8}>
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: isUserAnswer ? '#333' : '#bbb',
+                        marginRight: 1.5,
+                        mt: '2px'
+                      }}
+                    />
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: isCorrect
+                          ? '#4caf50'
+                          : isUserAnswer
+                          ? '#f44336'
+                          : 'inherit',
+                        fontWeight: isCorrect || isUserAnswer ? 'bold' : 'normal',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {value}
+                      {isCorrect && <span style={{ marginLeft: 8 }}>✅</span>}
+                      {!isCorrect && isUserAnswer && <span style={{ marginLeft: 8 }}>❌</span>}
+                    </Typography>
+                  </Box>
+                );
+              })}
             </Paper>
           ))}
 
           {/* 🔁 Buttons */}
           <Box textAlign="center" mt={4}>
             <Stack direction="row" spacing={2} justifyContent="center">
-              <Button
-                variant="outlined"
-                onClick={() => navigate('/')}
-                sx={{ px: 4 }}
-              >
+              <Button variant="outlined" onClick={() => navigate('/')} sx={{ px: 4 }}>
                 Home
               </Button>
-              <Button
-                variant="contained"
-                onClick={handleRestart}
-                sx={{ px: 4 }}
-              >
+              <Button variant="contained" onClick={handleRestart} sx={{ px: 4 }}>
                 Try Again
               </Button>
             </Stack>

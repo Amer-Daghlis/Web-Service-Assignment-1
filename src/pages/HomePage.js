@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { categories } from '../api/categories';
 import CategoryCard from '../components/CategoryCard';
 import {
@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
+import { useThemeColor } from '../components/ThemeContext'; // ✅ ThemeContext hook
 
 const filterTypes = ['Frontend', 'Backend', 'DevOps', 'Database', 'Infrastructure'];
 
@@ -23,6 +24,12 @@ function HomePage() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const { changeColorByLevel } = useThemeColor(); // ✅ Access theme controller
+
+  // ✅ Reset header color to blue when landing on home page
+  useEffect(() => {
+    changeColorByLevel(null);
+  }, [changeColorByLevel]);
 
   const handleCategoryClick = (categoryName) => {
     navigate(`/difficulty/${categoryName}`);

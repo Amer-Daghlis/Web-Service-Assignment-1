@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -8,20 +8,21 @@ import {
   Stack
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useThemeColor } from '../components/ThemeContext'; // ✅ correct path
 
 // 🎨 Backgrounds & Colors
 const themes = {
   Easy: {
-    color: '#4caf50', // Green
-    background: 'url(https://i.imgur.com/zFG7DgA.png)', // Chalkboard
+    color: '#4caf50',
+    background: 'https://i.imgur.com/zFG7DgA.png',
   },
   Medium: {
-    color: '#ff9800', // Orange
-    background: 'url(https://i.imgur.com/IUfz7Od.png)', // Brain maze
+    color: '#ff9800',
+    background: 'https://i.imgur.com/IUfz7Od.png',
   },
   Hard: {
-    color: '#d32f2f', // Red
-    background: 'url(https://i.imgur.com/DXZ61Kw.png)', // Hacker cave
+    color: '#d32f2f',
+    background: 'https://i.imgur.com/DXZ61Kw.png',
   }
 };
 
@@ -29,6 +30,8 @@ function DifficultySelector() {
   const { category } = useParams();
   const navigate = useNavigate();
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [backgroundKey, setBackgroundKey] = useState(0);
+  const { changeColorByLevel } = useThemeColor();
 
   const handleStart = () => {
     navigate(`/start/${category}/${selectedDifficulty}`);
@@ -36,23 +39,53 @@ function DifficultySelector() {
 
   const theme = themes[selectedDifficulty] || {};
 
+  useEffect(() => {
+    if (selectedDifficulty) {
+      changeColorByLevel(selectedDifficulty);
+      setBackgroundKey((prev) => prev + 1);
+    }
+  }, [selectedDifficulty, changeColorByLevel]);
+
   return (
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundImage: theme.background || 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
-        transition: 'background 0.5s',
-        padding: 4,
+        alignItems: 'center',
+        position: 'relative',
       }}
     >
+      {/* 🌄 Animated background image */}
+      <AnimatePresence mode="wait">
+        {selectedDifficulty && (
+          <motion.div
+            key={backgroundKey}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              backgroundImage: `url(${theme.background})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 💬 Quiz Content Box */}
       <Container
         maxWidth="sm"
         sx={{
+          zIndex: 1,
+          position: 'relative',
           bgcolor: '#ffffffdd',
           borderRadius: 5,
           padding: 4,
@@ -74,28 +107,43 @@ function DifficultySelector() {
 
         {/* 🔘 Difficulty Buttons */}
         <Stack spacing={2} mt={3}>
-          {['Easy', 'Medium', 'Hard'].map((level) => (
-            <Button
-              key={level}
-              variant={selectedDifficulty === level ? 'contained' : 'outlined'}
-              onClick={() => setSelectedDifficulty(level)}
-              sx={{
-                borderRadius: 5,
-                paddingY: 1.5,
-                fontWeight: 'bold',
-                color: selectedDifficulty === level ? '#fff' : undefined,
-                backgroundColor: selectedDifficulty === level ? theme.color : undefined,
-                '&:hover': {
-                  backgroundColor: selectedDifficulty === level ? theme.color : undefined,
-                }
-              }}
-            >
-              {level}
-            </Button>
-          ))}
+          {['Easy', 'Medium', 'Hard'].map((level) => {
+            const levelColors = {
+              Easy: '#4caf50',
+              Medium: '#ff9800',
+              Hard: '#d32f2f',
+            };
+
+            const isSelected = selectedDifficulty === level;
+
+            return (
+              <Button
+                key={level}
+                variant={isSelected ? 'contained' : 'outlined'}
+                size="large"
+                onClick={() => setSelectedDifficulty(level)}
+                sx={{
+                  width: '100%',
+                  borderRadius: 3,
+                  paddingY: 1.5,
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                  backgroundColor: isSelected ? levelColors[level] : 'transparent',
+                  color: isSelected ? '#fff' : levelColors[level],
+                  borderColor: levelColors[level],
+                  '&:hover': {
+                    backgroundColor: levelColors[level],
+                    color: '#fff',
+                  },
+                }}
+              >
+                {level}
+              </Button>
+            );
+          })}
         </Stack>
 
-        {/* ▶️ Start Button + Animation */}
+        {/* ▶️ Start Button */}
         <AnimatePresence>
           {selectedDifficulty && (
             <motion.div
@@ -113,6 +161,9 @@ function DifficultySelector() {
                   borderRadius: 10,
                   paddingX: 5,
                   backgroundColor: theme.color,
+                  '&:hover': {
+                    backgroundColor: theme.color,
+                  },
                 }}
               >
                 Start Quiz
