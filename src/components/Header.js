@@ -4,7 +4,9 @@ import { useThemeColor } from '../components/ThemeContext';
 import { motion } from 'framer-motion';
 
 function Header() {
-  const { levelColor } = useThemeColor();
+  const { levelColor, showHeader } = useThemeColor(); // 👈 get showHeader state
+
+  if (!showHeader) return null; // 👈 hide the header if set to false
 
   return (
     <motion.div

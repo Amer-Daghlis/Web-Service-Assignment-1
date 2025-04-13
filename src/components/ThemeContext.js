@@ -4,6 +4,7 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [levelColor, setLevelColor] = useState('#1976d2'); // default blue
+  const [showHeader, setShowHeader] = useState(true);       // ✅ NEW state
 
   const changeColorByLevel = (level) => {
     const colors = {
@@ -15,7 +16,14 @@ export const ThemeProvider = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ levelColor, changeColorByLevel }}>
+    <ThemeContext.Provider
+      value={{
+        levelColor,
+        changeColorByLevel,
+        showHeader,        // ✅ expose it
+        setShowHeader      // ✅ expose setter
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
