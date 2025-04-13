@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { categories } from '../api/categories';
 import CategoryCard from '../components/CategoryCard';
 import {
-  Grid,
   Typography,
   Container,
   Box,
@@ -11,22 +10,21 @@ import {
   FormControlLabel,
   Checkbox,
   FormGroup,
-  Paper
+  Paper,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
-import { useThemeColor } from '../components/ThemeContext'; // ✅ ThemeContext hook
+import { useThemeColor } from '../components/ThemeContext';
 
-const filterTypes = ['Frontend', 'Backend', 'DevOps', 'Database', 'Infrastructure'];
+const filterTypes = ['Frontend', 'Backend', 'DevOps', 'Database', 'Operating System'];
 
 function HomePage() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTypes, setSelectedTypes] = useState([]);
-  const { changeColorByLevel } = useThemeColor(); // ✅ Access theme controller
+  const { changeColorByLevel } = useThemeColor();
 
-  // ✅ Reset header color to blue when landing on home page
   useEffect(() => {
     changeColorByLevel(null);
   }, [changeColorByLevel]);
@@ -49,26 +47,44 @@ function HomePage() {
 
   return (
     <Box
-      sx={{
-        minHeight: '100vh',
-        background: 'linear-gradient(to right, #fdfbfb, #ebedee)',
-        py: 6,
-      }}
-    >
+  sx={{
+    minHeight: '100vh',
+    backgroundColor: '#23368CFF', // اللون الأساسي للخلفية
+    // إذا بدك تضيف صورة بخلفية شفافة فوق اللون:
+    backgroundImage: `linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.1)), url('/assets/quiz.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed',
+    py: 6,
+  }}
+>
       <Container maxWidth="xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Typography variant="h3" align="center" gutterBottom>
+          <Typography
+            variant="h3"
+            align="center"
+            gutterBottom
+            sx={{ color: '#FFFFFFFF', fontWeight: 'bold' }}
+          >
             Select Your Quiz Category
           </Typography>
         </motion.div>
 
-        <Grid container spacing={4} mt={4}>
-          {/* ✅ Left Sidebar Filters */}
-          <Grid item xs={12} md={3}>
+        <Box display="flex" gap={4} mt={4}>
+          {/* Sidebar Filter */}
+          <Box
+            sx={{
+              flex: '0 0 250px',
+              position: 'sticky',
+              top: 100,
+              height: 'fit-content',
+              transition: '0.3s ease-in-out',
+            }}
+          >
             <Paper
               elevation={4}
               sx={{
@@ -76,6 +92,7 @@ function HomePage() {
                 padding: 2,
                 backgroundColor: '#ffffffee',
                 backdropFilter: 'blur(6px)',
+                boxShadow: 3,
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -83,23 +100,35 @@ function HomePage() {
               </Typography>
               <FormGroup>
                 {filterTypes.map((type) => (
-                  <FormControlLabel
+                  <motion.div
                     key={type}
-                    control={
-                      <Checkbox
-                        checked={selectedTypes.includes(type)}
-                        onChange={() => handleCheckboxChange(type)}
-                      />
-                    }
-                    label={type}
-                  />
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedTypes.includes(type)}
+                          onChange={() => handleCheckboxChange(type)}
+                          sx={{
+                            '& .MuiCheckbox-root': {
+                              transition: '0.3s ease-in-out',
+                            },
+                          }}
+                        />
+                      }
+                      label={type}
+                    />
+                  </motion.div>
                 ))}
               </FormGroup>
             </Paper>
-          </Grid>
+          </Box>
 
-          {/* ✅ Main Section: Search + Cards */}
-          <Grid item xs={12} md={9}>
+          {/* Main Content */}
+          <Box sx={{ flex: 1 }}>
+            {/* Search Box */}
             <Box mb={3} display="flex" justifyContent="center">
               <TextField
                 placeholder="Search categories..."
@@ -126,25 +155,31 @@ function HomePage() {
               />
             </Box>
 
-            <Grid container spacing={2} justifyContent="center">
+            {/* Cards */}
+            <Box display="flex" flexWrap="wrap" justifyContent="flex-start" gap={2}>
               {filteredCategories.length > 0 ? (
                 filteredCategories.map((category) => (
-                  <Grid item key={category.name}>
+                  <motion.div
+                    key={category.name}
+                    whileHover={{ scale: 1.05, rotate: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <CategoryCard
                       name={category.name}
                       image={category.image}
                       onClick={() => handleCategoryClick(category.name)}
                     />
-                  </Grid>
+                  </motion.div>
                 ))
               ) : (
                 <Typography variant="h6" color="text.secondary">
                   No matching categories found.
                 </Typography>
               )}
-            </Grid>
-          </Grid>
-        </Grid>
+            </Box>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

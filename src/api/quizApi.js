@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = 'I2ZLm76R3eoD2na4EvLrMoJ0dS4ayGeSu530a9Cq';
+const API_KEY = '0do4GQXFmAbMi2Nh3g394x4J0XwKKPoAuEtOhJX4';
 const BASE_URL = 'https://quizapi.io/api/v1/questions';
 
 export const fetchQuestions = async ({ category, difficulty, limit = 10 }) => {

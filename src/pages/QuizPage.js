@@ -19,15 +19,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 const themes = {
   Easy: {
     color: '#4caf50',
-    background: 'url(https://i.imgur.com/zFG7DgA.png)'
   },
   Medium: {
     color: '#ff9800',
-    background: 'url(https://i.imgur.com/IUfz7Od.png)'
   },
   Hard: {
     color: '#d32f2f',
-    background: 'url(https://i.imgur.com/DXZ61Kw.png)'
   }
 };
 

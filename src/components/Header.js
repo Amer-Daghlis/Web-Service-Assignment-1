@@ -30,7 +30,7 @@ function Header() {
               component="div"
               sx={{ fontWeight: 'bold', textAlign: 'center' }}
             >
-              🎓 Quizzy Brainiac!
+              💻QuizHub!
             </Typography>
           </Box>
         </Toolbar>

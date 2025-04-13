@@ -14,15 +14,12 @@ import { useThemeColor } from '../components/ThemeContext'; // ✅ correct path
 const themes = {
   Easy: {
     color: '#4caf50',
-    background: 'https://i.imgur.com/zFG7DgA.png',
   },
   Medium: {
     color: '#ff9800',
-    background: 'https://i.imgur.com/IUfz7Od.png',
   },
   Hard: {
     color: '#d32f2f',
-    background: 'https://i.imgur.com/DXZ61Kw.png',
   }
 };
 
@@ -54,26 +51,30 @@ function DifficultySelector() {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      {/* 🌄 Animated background image */}
+      {/* 🎥 Full-page animated video background */}
       <AnimatePresence mode="wait">
         {selectedDifficulty && (
-          <motion.div
+          <motion.video
             key={backgroundKey}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
+            src={theme.background}
+            autoPlay
+            muted
+            loop
+            playsInline
             style={{
-              backgroundImage: `url(${theme.background})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              position: 'absolute',
+              position: 'fixed',
               top: 0,
               left: 0,
-              right: 0,
-              bottom: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
               zIndex: 0
             }}
           />
@@ -147,11 +148,11 @@ function DifficultySelector() {
         <AnimatePresence>
           {selectedDifficulty && (
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 30 }}
-              transition={{ duration: 0.5 }}
-              style={{ marginTop: '30px' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ marginTop: '2rem' }}
             >
               <Button
                 variant="contained"

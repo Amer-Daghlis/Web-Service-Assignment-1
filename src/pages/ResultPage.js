@@ -116,6 +116,7 @@ function ResultPage() {
                 <Typography variant="h5" color="error.main" sx={{ fontWeight: 'bold' }}>
                   😡 Oops... Better luck next time!
                 </Typography>
+                
               </>
             )}
           </Box>

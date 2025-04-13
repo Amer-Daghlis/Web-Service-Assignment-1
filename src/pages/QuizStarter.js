@@ -11,9 +11,9 @@ const colors = {
 };
 
 const backgrounds = {
-  Easy: 'https://i.imgur.com/zFG7DgA.png',
-  Medium: 'https://i.imgur.com/IUfz7Od.png',
-  Hard: 'https://i.imgur.com/DXZ61Kw.png'
+  Easy: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnZ5MTJvaHR2cGl1NXo5bzJpNzdwYjJ4ZmM4cDRuejJpanlmYWNreiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Kq6wP0p5e1sOK065Gs/giphy.gif',
+  Medium: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExczY5N2Q2eWNxdjB3bWx3dTR4ZWVyZHk1eW03enZvZWw2MzkzamY1ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ef7GqsDYDIKFa/giphy.gif'
+  ,Hard: 'https://i.giphy.com/5eF7nzp1oP3ryGjWcG.webp'
 };
 
 function QuizStarter() {
@@ -53,7 +53,7 @@ function QuizStarter() {
       sx={{
         minHeight: '100vh',
         backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${bgImage})`,
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
         backgroundPosition: 'center',
         display: 'flex',
         alignItems: 'center',
